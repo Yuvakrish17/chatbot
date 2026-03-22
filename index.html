@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBot - AI Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Ionicons for beautiful lightweight SVGs -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar for Chat Memory -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button id="new-chat-btn" class="btn primary-btn">
+                    <ion-icon name="add-outline"></ion-icon>
+                    New Session
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <h3 class="section-label">Past Sessions</h3>
+                <ul id="history-list" class="history-list">
+                    <!-- History injected by JS -->
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                <button id="clear-all-btn" class="btn text-btn" style="margin-bottom: 8px;">Clear All Data</button>
+                <button id="logout-btn" class="btn text-btn">
+                    <ion-icon name="log-out-outline"></ion-icon>
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <div class="header-left">
+                    <button class="icon-btn" id="toggle-sidebar">
+                        <ion-icon name="menu-outline"></ion-icon>
+                    </button>
+                    <h2>StudyBot</h2>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn" id="settings-btn" title="Settings">
+                        <ion-icon name="settings-outline"></ion-icon>
+                    </button>
+                </div>
+            </header>
+
+            <div class="messages-container" id="messages-container">
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="logo-wrapper">
+                        <ion-icon name="book-outline"></ion-icon>
+                    </div>
+                    <h1>How can I help you study today?</h1>
+                    <p>I can explain concepts, quiz you, or summarize your notes.</p>
+                </div>
+                <!-- Chat Bubbles injected by JS -->
+            </div>
+
+            <div class="input-area-wrapper">
+                <div class="input-container">
+                    <textarea id="chat-input" placeholder="Message StudyBot..." rows="1" autocomplete="off"></textarea>
+                    <button class="icon-btn send-btn" id="send-btn" disabled>
+                        <ion-icon name="arrow-up-outline"></ion-icon>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    Bot responses are stored locally in your browser.
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-content glass-effect">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="icon-btn close-modal" id="close-settings">
+                    <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="ai-provider">AI Provider</label>
+                    <select id="ai-provider" class="custom-input">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="groq">Groq</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="api-key">API Key</label>
+                    <input type="password" id="api-key" placeholder="Enter your API Key" class="custom-input">
+                    <small class="helper-text">Your key is stored securely in your browser's local storage and never sent anywhere else.</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-settings" class="btn primary-btn">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

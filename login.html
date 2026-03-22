@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBot - Access</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="logo-wrapper">
+                <ion-icon name="book-outline"></ion-icon>
+            </div>
+            <h2 id="auth-title">Student Login</h2>
+            <p id="auth-subtitle">Log in to resume your study sessions.</p>
+            
+            <div id="error-msg" class="error-msg" style="display:none;"></div>
+            <div id="success-msg" class="success-msg" style="display:none;"></div>
+            
+            <form id="auth-form" class="login-form">
+                <div class="form-group">
+                    <label for="student-id">Student ID / Username</label>
+                    <input type="text" id="student-id" class="custom-input" placeholder="e.g. s12345" required autocomplete="off">
+                </div>
+                <!-- Required password for secure flow -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="custom-input" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" id="auth-submit-btn" class="btn primary-btn">Access StudyBot</button>
+            </form>
+
+            <div class="auth-toggle">
+                <button id="toggle-auth-mode" class="text-btn">Don't have an account? Create one</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isLoginMode = true;
+        const form = document.getElementById('auth-form');
+        const title = document.getElementById('auth-title');
+        const subtitle = document.getElementById('auth-subtitle');
+        const submitBtn = document.getElementById('auth-submit-btn');
+        const toggleBtn = document.getElementById('toggle-auth-mode');
+        const errorMsg = document.getElementById('error-msg');
+        const successMsg = document.getElementById('success-msg');
+        
+        // Mock DB using local storage
+        let usersDB = JSON.parse(localStorage.getItem('studybot_users') || '{}');
+
+        // Toggle Login / Register
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            if(isLoginMode) {
+                title.textContent = "Student Login";
+                subtitle.textContent = "Log in to resume your study sessions.";
+                submitBtn.textContent = "Access StudyBot";
+                toggleBtn.textContent = "Don't have an account? Create one";
+            } else {
+                title.textContent = "Create Account";
+                subtitle.textContent = "Register to start your personal sessions.";
+                submitBtn.textContent = "Create Account";
+                toggleBtn.textContent = "Already have an account? Log in";
+            }
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+            
+            const studentId = document.getElementById('student-id').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if(!studentId || !password) return;
+
+            if(isLoginMode) {
+                // Login Flow
+                if(!usersDB[studentId]) {
+                    errorMsg.textContent = "User not found. Please create an account.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+                if(usersDB[studentId].password !== btoa(password)) {
+                    errorMsg.textContent = "Incorrect password.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+                
+                // Login Success!
+                localStorage.setItem('studybot_user', studentId);
+                window.location.href = 'index.html';
+                
+            } else {
+                // Register Flow
+                if(usersDB[studentId]) {
+                    errorMsg.textContent = "Username already exists. Please choose another or log in.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+                if(password.length < 4) {
+                    errorMsg.textContent = "Password must be at least 4 characters.";
+                    errorMsg.style.display = 'block';
+                    return;
+                }
+                
+                // Save base64 obfuscated password
+                usersDB[studentId] = {
+                    password: btoa(password),
+                    createdAt: new Date().toISOString()
+                };
+                localStorage.setItem('studybot_users', JSON.stringify(usersDB));
+                
+                successMsg.textContent = "Account created! Please log in.";
+                successMsg.style.display = 'block';
+                
+                // Switch visually back to login mode so they can type it
+                isLoginMode = true;
+                title.textContent = "Student Login";
+                subtitle.textContent = "Log in to resume your study sessions.";
+                submitBtn.textContent = "Access StudyBot";
+                toggleBtn.textContent = "Don't have an account? Create one";
+                document.getElementById('password').value = '';
+            }
+        });
+        
+        // Redirect if already logged in
+        if (localStorage.getItem('studybot_user')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
