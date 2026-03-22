@@ -16,12 +16,18 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Mobile Overlay -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
         <!-- Sidebar for Chat Memory -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <button id="new-chat-btn" class="btn primary-btn">
+                <button id="new-chat-btn" class="btn primary-btn" style="flex: 1;">
                     <ion-icon name="add-outline"></ion-icon>
                     New Session
+                </button>
+                <button id="close-sidebar-mobile" class="mobile-close-btn">
+                    <ion-icon name="close-outline"></ion-icon>
                 </button>
             </div>
             <div class="sidebar-content">

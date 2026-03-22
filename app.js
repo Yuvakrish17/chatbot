@@ -43,8 +43,10 @@ function init() {
     if (chatInput) chatInput.focus();
     
     // Hide sidebar by default on mobile or tablet
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth <= 768 && sidebar) {
         sidebar.classList.add('hidden');
+        const overlay = document.getElementById('sidebar-overlay');
+        if(overlay) overlay.classList.remove('active');
     }
 }
 
@@ -104,6 +106,8 @@ function loadSession(id) {
     // Smoothly hide sidebar if interacting on mobile
     if (window.innerWidth <= 768 && sidebar) {
         sidebar.classList.add('hidden');
+        const overlay = document.getElementById('sidebar-overlay');
+        if(overlay) overlay.classList.remove('active');
     }
 }
 
@@ -137,10 +141,27 @@ function clearAllData() {
 
 // UI Event Listeners
 function setupEventListeners() {
-    // Sidebar Toggle
-    toggleSidebarBtn.addEventListener('click', () => {
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    const closeSidebarMobile = document.getElementById('close-sidebar-mobile');
+
+    function toggleSidebar() {
         sidebar.classList.toggle('hidden');
-    });
+        if (window.innerWidth <= 768) {
+            sidebarOverlay.classList.toggle('active', !sidebar.classList.contains('hidden'));
+        }
+    }
+
+    function closeSidebarOnMobile() {
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('hidden');
+            if(sidebarOverlay) sidebarOverlay.classList.remove('active');
+        }
+    }
+
+    // Sidebar Toggle
+    toggleSidebarBtn.addEventListener('click', toggleSidebar);
+    if (closeSidebarMobile) closeSidebarMobile.addEventListener('click', closeSidebarOnMobile);
+    if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebarOnMobile);
 
     // Auto-resize textarea
     chatInput.addEventListener('input', function() {
