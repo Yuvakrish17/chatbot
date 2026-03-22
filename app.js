@@ -41,6 +41,11 @@ function init() {
     
     // Auto-focus input
     if (chatInput) chatInput.focus();
+    
+    // Hide sidebar by default on mobile or tablet
+    if (window.innerWidth <= 768) {
+        sidebar.classList.add('hidden');
+    }
 }
 
 // Memory Store Logic
@@ -95,6 +100,11 @@ function loadSession(id) {
     if (activeItem) activeItem.classList.add('active');
     
     scrollToBottom();
+    
+    // Smoothly hide sidebar if interacting on mobile
+    if (window.innerWidth <= 768 && sidebar) {
+        sidebar.classList.add('hidden');
+    }
 }
 
 function renderHistoryList() {
